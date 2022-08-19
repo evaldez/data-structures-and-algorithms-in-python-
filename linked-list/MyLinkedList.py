@@ -1,3 +1,6 @@
+from contextlib import nullcontext
+
+
 class Node:
     def __init__(self, value):
         self.value = value
@@ -98,12 +101,20 @@ class MyLinkedList:
         return
 
     def invert(self):
-        self.tail.value 
-        invertedLinked = MyLinkedList(self.tail.value)
-        node_values = self.get_node_values()
-        for i in range(self.length):
-            invertedLinked.append(node_values[(self.length-1)-i])
-        return invertedLinked
+        if not self.head.next: return self.head
+        first = self.head
+        self.tail = self.head
+        second = self.head.next
+        while(second):
+            tmp = second.next
+            second.next = first
+            first=second
+            second = tmp
+        
+        self.tail.next=None
+        self.head = first
+        
+        return self
 
 if __name__ == '__main__':
     head_value=10
@@ -120,5 +131,5 @@ if __name__ == '__main__':
     print(linked_list.get_node_values())
     linked_list.remove(0)
     print(linked_list.get_node_values())
-    invertedLinked = linked_list.invert()
+    invertedLinked = linked_list.invertV2()
     print(invertedLinked.get_node_values())
