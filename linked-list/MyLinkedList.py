@@ -63,7 +63,7 @@ class MyLinkedList:
         tmp_index=1
         previous_node = self.head
         current_node = self.head.next
-        while True:
+        while tmp_index < self.length :
             if index == tmp_index:
                 new_node.next = current_node
                 previous_node.next = new_node
@@ -73,6 +73,29 @@ class MyLinkedList:
                 tmp_index+=1
                 previous_node = current_node
                 current_node = current_node.next
+
+    def remove(self, index):
+        if index > self.length-1: raise IndexError(f'Index {index} out of bound')
+        
+        # remove head
+        if index == 0:
+            self.head = self.head.next
+            self.length-=1
+            return
+        # otherwise
+        tmp_index = 1
+        previous_node = self.head
+        current_node = self.head.next
+        while tmp_index < self.length :
+            if index == tmp_index:
+                previous_node.next = current_node.next
+                self.length-=1
+                break
+            else:
+                tmp_index+=1
+                previous_node = current_node
+                current_node = current_node.next        
+        return
 
 if __name__ == '__main__':
     head_value=10
@@ -84,4 +107,8 @@ if __name__ == '__main__':
     linked_list.prepend(1990)
     print(linked_list.get_node_values())
     linked_list.insert(1, 88)
+    print(linked_list.get_node_values())
+    linked_list.remove(3)
+    print(linked_list.get_node_values())
+    linked_list.remove(0)
     print(linked_list.get_node_values())
