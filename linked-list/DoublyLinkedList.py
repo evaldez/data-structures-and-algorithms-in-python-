@@ -2,8 +2,9 @@ class Node:
     def __init__(self, value):
         self.value = value
         self.next = None
+        self.previous = None
 
-class MyLinkedList:
+class DoublyLinkedList:
     def __init__(self, head_value):
         new_node = Node(head_value)
         self.head = new_node
@@ -27,7 +28,9 @@ class MyLinkedList:
 
     def append(self, value):
         new_node = Node(value)
-        self.tail.next = new_node
+        tail_node_before_append = self.tail
+        new_node.previous = tail_node_before_append
+        tail_node_before_append.next = new_node
         self.tail = new_node
         self.length += 1
         return self
@@ -35,6 +38,7 @@ class MyLinkedList:
     def prepend(self, value):
         new_node = Node(value)
         new_node.next = self.head
+        self.head.previous = new_node
         self.head = new_node
         self.length += 1
         return self 
@@ -66,6 +70,8 @@ class MyLinkedList:
         while tmp_index < self.length :
             if index == tmp_index:
                 new_node.next = current_node
+                new_node.previous = current_node.previous
+                current_node.previous = new_node
                 previous_node.next = new_node
                 self.length+=1
                 break
@@ -79,6 +85,7 @@ class MyLinkedList:
         
         # remove head
         if index == 0:
+            self.head.next.previous=None
             self.head = self.head.next
             self.length-=1
             return
@@ -88,6 +95,7 @@ class MyLinkedList:
         current_node = self.head.next
         while tmp_index < self.length :
             if index == tmp_index:
+                current_node.next.previous=previous_node
                 previous_node.next = current_node.next
                 self.length-=1
                 break
@@ -97,17 +105,9 @@ class MyLinkedList:
                 current_node = current_node.next        
         return
 
-    def invert(self):
-        self.tail.value 
-        invertedLinked = MyLinkedList(self.tail.value)
-        node_values = self.get_node_values()
-        for i in range(self.length):
-            invertedLinked.append(node_values[(self.length-1)-i])
-        return invertedLinked
-
 if __name__ == '__main__':
     head_value=10
-    linked_list= MyLinkedList(10)
+    linked_list= DoublyLinkedList(10)
     linked_list.append(6)
     linked_list.append(8)
     linked_list.append(123)
@@ -120,5 +120,3 @@ if __name__ == '__main__':
     print(linked_list.get_node_values())
     linked_list.remove(0)
     print(linked_list.get_node_values())
-    invertedLinked = linked_list.invert()
-    print(invertedLinked.get_node_values())
