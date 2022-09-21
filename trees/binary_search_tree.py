@@ -184,10 +184,81 @@ class BinarySearchTree:
         # return the result
         return result
 
+    def dfs_preorder(self) -> list:
+        current_node = self.root
+        stop_condition = False
+        stack = []
+        stack.append(current_node)
+        result = []
+        while stack:
+            current_node = stack.pop()
+            result.append(current_node.value)
+            if current_node.right: stack.append(current_node.right)
+            if current_node.left: stack.append(current_node.left)
+        return result
+
+    def checkBFS(self) -> list:
+        root= self.root
+        current_node = root
+        queue = deque([])
+        data_current_node ={
+            'heritage_trace':[
+                #{
+                #    'value':None, # node value 
+                #    'brach_type': None # if comes from left or right
+                #}
+            ],
+            'node' : current_node
+        }
+        queue.append(data_current_node)
+        while queue:
+            data_current_node = queue.popleft()
+            current_node= data_current_node['node']
+            heritage_trace= data_current_node['heritage_trace']
+            if current_node.left: 
+                if current_node.left.val >= current_node.val: return False
+                data_left_child_node = {
+                    'node':current_node.left
+                }
+                data_left_child_node['heritage_trace']=[]
+                data_left_child_node['heritage_trace']+=heritage_trace
+                # Set parent node data
+                instant_parent_node_data ={
+                    'value': current_node.val, # node value 
+                    'brach_type': 'l' # if comes from left or right
+                }
+                data_left_child_node['heritage_trace'].append(instant_parent_node_data)
+                queue.append(data_left_child_node)
+            if current_node.right: 
+                if current_node.right.val <= current_node.val: return False
+                data_right_child_node = {
+                    'node':current_node.right
+                }
+                data_right_child_node['heritage_trace']=[]
+                data_right_child_node['heritage_trace']+=heritage_trace
+                # Set parent node data
+                instant_parent_node_data ={
+                    'value': current_node.val, # node value 
+                    'brach_type': 'r' # if comes from left or right
+                }
+                data_right_child_node['heritage_trace'].append(instant_parent_node_data)
+                queue.append(data_right_child_node)
+            
+            # check for heritage trace
+            if heritage_trace:
+                for every_parent_node in heritage_trace:
+                    if every_parent_node['brach_type'] == 'r':
+                        if every_parent_node['value'] >=  current_node.val: return False
+                    if every_parent_node['brach_type'] == 'l': 
+                        if every_parent_node['value'] <=  current_node.val: return False
+        return True
+
 if __name__ == '__main__':
 
-    test_bfs = True
+    test_bfs = False
+    test_dfs_preorder = False
     test_remove = False
+    test_check_bfs = True
 
     tree = BinarySearchTree()
     #nodes = [41,20,11,29,32,65,50,91,72,99]
@@ -195,10 +266,17 @@ if __name__ == '__main__':
     for node in nodes:
         tree.insert(node)
     
+    if test_check_bfs:
+        valid_bfs = tree.checkBFS()
+        print(f'valid_bfs: {valid_bfs} ')
     if test_bfs:
         bfs_order = tree.breadthFirstSearchR()
         print(bfs_order)
     
+    if test_dfs_preorder:
+        dfs_preorder_result = tree.dfs_preorder()
+        print(dfs_preorder_result)
+
     if test_remove:
         found_tree, parent_node, trace  = tree.lookup(99)
         print(f'found_tree.value {found_tree.value}')
