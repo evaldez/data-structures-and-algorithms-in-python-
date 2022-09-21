@@ -1,3 +1,5 @@
+from collections import deque
+
 class Node:
     def __init__(self, value=None):
         self.value = value
@@ -149,33 +151,65 @@ class BinarySearchTree:
             counter+=1
         return
 
-    def breadthFirstSearch(self):
+    def breadthFirstSearch(self) -> list:
         current_node = self.root
         stop_condition = False
-        queue = []
+        queue = deque([])
         queue.append(current_node)
         counter=0
-        while not queue:
-            if counter == 2: break
-            counter+=1
+        result = []
+        while queue:
+            current_node = queue.popleft()
+            result.append(current_node.value)
+            if current_node.left: queue.append(current_node.left)
+            if current_node.right: queue.append(current_node.right)
+        return result
+
+    def breadthFirstSearchR(self, queue=None, result=None ):
+        if queue is None: 
+            queue = deque([])
+            queue.append(self.root)
+        if result is None: result = []
         
-        return
+        # base case
+        if not queue: return result
+        
+        # recursive case
+        current_node = queue.popleft()
+        result.append(current_node.value)
+        if current_node.left: queue.append(current_node.left)
+        if current_node.right: queue.append(current_node.right)
+        result = self.breadthFirstSearchR(queue, result )
+        
+        # return the result
+        return result
 
 if __name__ == '__main__':
+
+    test_bfs = True
+    test_remove = False
+
     tree = BinarySearchTree()
-    nodes = [41,20,11,29,32,65,50,91,72,99]
+    #nodes = [41,20,11,29,32,65,50,91,72,99]
+    nodes = [9, 4, 6, 20, 170, 15, 1]
     for node in nodes:
         tree.insert(node)
-    found_tree, parent_node, trace  = tree.lookup(99)
-    print(f'found_tree.value {found_tree.value}')
-    print(f'trace {trace} ')
-    tree.remove(41)
-    found_tree, parent_node, trace  = tree.lookup(99)
-    print('AFTER REMOVE {41} ')
-    print(f'found_tree.value {found_tree.value}')
-    print(f'trace {trace} ')
-    tree.remove(50)
-    found_tree, parent_node, trace  = tree.lookup(32)
-    print('AFTER REMOVE  {50}')
-    print(f'found_tree.value {found_tree.value}')
-    print(f'trace {trace} ')
+    
+    if test_bfs:
+        bfs_order = tree.breadthFirstSearchR()
+        print(bfs_order)
+    
+    if test_remove:
+        found_tree, parent_node, trace  = tree.lookup(99)
+        print(f'found_tree.value {found_tree.value}')
+        print(f'trace {trace} ')
+        tree.remove(41)
+        found_tree, parent_node, trace  = tree.lookup(99)
+        print('AFTER REMOVE {41} ')
+        print(f'found_tree.value {found_tree.value}')
+        print(f'trace {trace} ')
+        tree.remove(50)
+        found_tree, parent_node, trace  = tree.lookup(32)
+        print('AFTER REMOVE  {50}')
+        print(f'found_tree.value {found_tree.value}')
+        print(f'trace {trace} ')
