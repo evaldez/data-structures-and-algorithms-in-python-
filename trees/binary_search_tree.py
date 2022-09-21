@@ -149,6 +149,17 @@ class BinarySearchTree:
             counter+=1
         return
 
+    def breadthFirstSearch(self):
+        current_node = self.root
+        stop_condition = False
+        queue = []
+        queue.append(current_node)
+        counter=0
+        while not queue:
+            if counter == 2: break
+            counter+=1
+        
+        return
 
 if __name__ == '__main__':
     tree = BinarySearchTree()
